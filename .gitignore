@@ -1,4 +1,4 @@
 
-env/
+/env/
 *.pickle
 __pycache__/
