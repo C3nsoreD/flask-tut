@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
 
-{% block title %}BLOG2.0 - index{% endblock %}
+{% block title %}BLOG2.0{% endblock %}
 
 {% block page_content %}
+<div class='page-header'>
+  <h1>Home</h1>
+</div>
+<p>The local date and time is {{ moment(current_time).format('LLL') }}.</p>
+<p>That was {{ moment(current_time).fromNow(refresh=True) }}</p>
 {% endblock %}
