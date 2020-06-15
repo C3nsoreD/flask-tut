@@ -1,9 +1,10 @@
 from flask import Flask, render_template
 from flask import request, make_response
-# from flask.ext.script import Manager
+from flask_bootstrap import Bootstrap
 
-app = Flask(__name__)
-# manager = Manager(app)
+
+app = Flask(__name__) 
+Bootstrap(app)
 
 
 @app.route('/')

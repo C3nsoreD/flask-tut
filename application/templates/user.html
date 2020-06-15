@@ -1,1 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}User{% endblock %}
+
+{% block head %}
+  {{ super() }}
+  <style></style>
+{% endblock %}
+
+{% block content %}
+
 <h1> hello, {{ val|capitalize }}! </h1>
+
+{% endblock %}
