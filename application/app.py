@@ -5,13 +5,21 @@ from flask_moment import Moment
 from flask_wtf import Form
 from wtforms import StringField, SubmitField 
 from wtforms.validators import Required
+from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-
+import os
 
 app = Flask(__name__) 
 app.config['SECRET_KEY'] = 'c3n_code'
 Bootstrap(app)
 moment = Moment(app)
+
+
+basebir = os.path.abspath(os.path.dirname(__name__))
+app.config['SQLALCCHEMY_DATABSE_URI'] =  'sqlite:///'+os.path.join(basebir, 'data.sqlite')
+app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
+db = SQLAlchemy(app)
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -40,11 +48,32 @@ def page_not_found(e):
 def internal_server_error(e):
     return render_template('error/500.html'), 500
 
+
 #Froms ----------------------->
 class NameForm(Form):
     name = StringField('What is your name?', validators=[Required()])
     submit = SubmitField("Submit")
 
+
+#Models ---------------------->
+class Role(db.Model):
+    __tablename__ = 'roles'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), unique=True)
+
+    def __repr__(self):
+        return f'<User {self.name}'
+
+    
+class User(db.Model):
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), unique=True, index=True)
+
+    def __repr__(self):
+        return f'<User {self.username}'
+
+    
 
 if __name__ == "__main__":
     app.run(debug=True)
