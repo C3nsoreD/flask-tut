@@ -2,3 +2,7 @@
 /env/
 *.pickle
 __pycache__/
+.vscode/
+pipfile
+*.db
+*.lock

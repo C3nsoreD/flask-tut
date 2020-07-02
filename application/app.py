@@ -14,16 +14,22 @@ from datetime import datetime
 
 import os
 
-app = Flask(__name__) 
+basebir = os.path.abspath(os.path.dirname(__name__))
+
+app = Flask(__name__)
+
+app.config['SQLALCHEMY_DATABSE_URI'] = 'sqlite:///'+os.path.join(basebir, 'data.sqlite')
+
+# app.config['SQLALCHEMY_DATABSE_URI'] = 'sqlite:////tmp/test.db'
+# app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+
+
 app.config['SECRET_KEY'] = 'c3n_code'
 Bootstrap(app)
 moment = Moment(app)
 
 db = SQLAlchemy(app)
-basebir = os.path.abspath(os.path.dirname(__name__))
-app.config['SQLALCHEMY_DATABSE_URI'] = 'sqlite:///'+os.path.join(basebir, 'data.sqlite')
-app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
-
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -89,6 +95,6 @@ class User(db.Model):
     def __repr__(self):
         return f'<User {self.username}'
 
-    
 if __name__ == "__main__":
+    db.create_all()
     app.run(debug=True)
