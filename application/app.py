@@ -10,6 +10,7 @@ from wtforms import StringField, SubmitField
 from wtforms.validators import Required
 
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from datetime import datetime
 
 import os
@@ -21,8 +22,8 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABSE_URI'] = 'sqlite:///'+os.path.join(basebir, 'data.sqlite')
 
 # app.config['SQLALCHEMY_DATABSE_URI'] = 'sqlite:////tmp/test.db'
-# app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 
 app.config['SECRET_KEY'] = 'c3n_code'
@@ -30,6 +31,7 @@ Bootstrap(app)
 moment = Moment(app)
 
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 
 @app.route('/', methods=['GET', 'POST'])
