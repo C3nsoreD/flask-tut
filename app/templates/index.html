@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}BLOG2.0{% endblock %}
+
+{% block page_content %}
+<div class='page-header'>
+  <h2>Hello {% if name %}{{ name|capitalize }}{% else %}Stranger{% endif %}!</h2>
+  <div>
+    {% if not known %}
+    <p>Pleased to meet you</p>
+    {% else %}
+    <p>Happy to see you again!</p>
+    {% endif %}
+  </div>
+</div>
+<p>The current local date and time is <b>{{ moment(current_time).format('LLL') }}</b>.</p>
+<p><small>That was {{ moment(current_time).fromNow(refresh=True) }}</small></p>
+{{ wtf.quick_form(form)}}
+{% endblock %}
