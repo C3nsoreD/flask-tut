@@ -35,4 +35,4 @@ def index():
     return render_template('index.html', 
         current_time=datetime.utcnow(), 
         form=form, name=session.get('name'),
-        known = session.get('known' , False))
+        known = session.get('known', False))
