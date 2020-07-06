@@ -82,7 +82,7 @@ def init_db():
 def index():
     # name = None
     form = NameForm()
-    if  form.validate_on_submit():
+    if form.validate_on_submit():
         user = User.query.filter_by(username=form.name.data).first()
         # check if the user is known
         if user is None:
@@ -103,10 +103,8 @@ def index():
 
         return redirect(url_for('index'))
 
-    return render_template('index.html', 
-        current_time=datetime.utcnow(), 
-        form=form, name=session.get('name'),
-        known = session.get('known' , False))
+    return render_template('index.html', current_time=datetime.utcnow(), 
+            form=form, name=session.get('name'), known = session.get('known' , False))
 
 @app.route('/user/<name>')
 def user(name):
