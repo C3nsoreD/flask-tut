@@ -2,7 +2,7 @@ from flask import render_template, redirect, request, url_for, flash
 from flask_login import login_user, logout_user, login_required
 
 from . import auth 
-from .forms import LoginForm
+from .forms import LoginForm, RegistrationForm
 from ..models import User
 
 
@@ -10,7 +10,7 @@ from ..models import User
 def login():
     form = LoginForm()
     if form.validate_on_submit(): # if form is valid
-        # Search for user in databse
+        # Search for user in database
         user = User.query.filter_by(email=form.email.data).first()
         # If the user is None and the passward is verified
         if user is not None and user.verify_password(form.password.data):
@@ -30,3 +30,15 @@ def logout():
     flash('You have been logged out.')
     return redirect(url_for('main.index'))
 
+
+@auth.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        user = User(email=form.email.data, 
+                    username=form.username.data,
+                    passward=form.passward.data)
+        db.session.add(user)
+        flash('You can now login')
+        return redirect(url_for('auth.login'))
+    return render_template('auth/register.html', form=form)
