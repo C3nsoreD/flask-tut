@@ -1,0 +1,16 @@
+{% extends 'base.html'%}
+{% import 'booststrap/wtf.html' as wtf%}
+
+{% block title %}BLOG2.0{% endblock %} 
+{% block page_content %}
+<div class="page_header">
+
+  <h2>Hello, {{ current_user.username }}! </h2>
+
+  <h4>Please confirm your email</h4>
+  <p>
+    Need another confirmation email? <a href="{{ url_for('auth.resend_confirmation') }}">Click here</a>
+  </p>
+</div>
+
+{% endblock %}
