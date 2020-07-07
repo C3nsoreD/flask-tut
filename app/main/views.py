@@ -18,13 +18,13 @@ def index():
             db.session.add(user)
             session['known'] = False
             # send mail to admin
-            if app.config['BLOG_TWO_ADMIN']:
-                send_mail(
-                    app.config['BLOG_TWO_ADMIN'], # to 
-                    'New User', # subject
-                    'mail/new_user', # template folder
-                    user=user # kwargs for the template file
-                    )
+            # if app.config['BLOG_TWO_ADMIN']:
+            #     send_mail(
+            #         app.config['BLOG_TWO_ADMIN'], # to 
+            #         'New User', # subject
+            #         'mail/new_user', # template folder
+            #         user=user # kwargs for the template file
+            #         )
         else:
             session['known'] = True
         session['name'] = form.name.data

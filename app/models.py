@@ -49,4 +49,3 @@ def load_user(user_id):
     This sets the callback for reloading a user from the session.
     '''
     return User.query.get(int(user_id))
-
