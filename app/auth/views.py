@@ -59,6 +59,7 @@ def confirm(token):
         flash('The confirmation link is invalid or expired.')
     return render_template(url_for('main.index'))
 
+# User must be logged-in inorder to recieve another confirmation email
 @auth.route('/confirm')
 @login_required
 def resend_confirmation():
@@ -67,6 +68,7 @@ def resend_confirmation():
     flash('A confirmation has been sent to your email')
     return render_template(url_for('main.index'))
 
+# before each request a user is verified if they have confirmed there email
 @auth.before_app_request
 def before_request():
     if current_user.is_authenticateed() \
@@ -74,6 +76,7 @@ def before_request():
             and request.endpoint[:5] != 'auth.':
         return redirect(url_for('auth.unconfirmed'))
 
+# Route for unconfirmed user 
 @auth.route('/unconfirmed')
 def unconfirmed():
     if current_user.is_anonymous() or current_user.confirmed:
