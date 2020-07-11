@@ -48,10 +48,16 @@ class User(UserMixin, db.Model):
 
     # User account confirmantion
     def generate_confirmation_token(self, expiration=3600):
+        '''
+        Returns a dictionary from comfimation 
+        '''
         s = Serializer(current_app.config['SECRET_KEY'], expiration)
         return s.dumps({'confirm':self.id})
 
     def generate_reset_token(self, expiration=3600):
+        '''
+        Returns a dictionary for resets
+        '''
         s = Serializer(current_app.config['SECRET_KEY'], expiration)
         return s.dumps({'reset':self.id})
 
@@ -60,6 +66,10 @@ class User(UserMixin, db.Model):
         return s.dumps({'change_email': self.id, 'new_email':new_email})
  
     def confirm(self, token):
+        '''
+        Confirm function: Used for verify if the Token is authenticate.
+        Used for Email confirmation messages.
+        '''
         s = Serializer(current_app.config['SECRET_KEY'])
         try:
             data = s.loads(token)
@@ -72,6 +82,11 @@ class User(UserMixin, db.Model):
         return True
 
     def change_email(self, token):
+        '''
+        Takes a authenticaton token verifies token using SECRET_KEY if the token is valid a new email is recorded.
+        Checks if the new email already exists in the db. 
+        Returns True if the email is unique and the token is authentic. 
+        '''
         s = Serializer(current_app.config['SECRET_KEY'])
         try:
             data = s.loads(token)
@@ -79,6 +94,7 @@ class User(UserMixin, db.Model):
             return False
         if data.get('change_email') != self.id:
             return False
+        
         new_email = data.get('new_email')
         if new_email is None:
             return False 
@@ -92,11 +108,17 @@ class User(UserMixin, db.Model):
         return True
          
     def reset_password(self, token, new_password):
+        '''
+        Takes 2 arguments. A token and new password, Verifies the token
+        Adds new password to the database.
+        Returns True if token is authentic
+        '''
         s = Serializer(current_app.config['SECRET_KEY'])
         try:
             data = s.loads(token)
         except:
             return False
+        
         if data.get('reset') != self.id:
             return False
         self.password = new_password
