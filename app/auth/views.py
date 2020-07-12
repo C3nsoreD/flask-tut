@@ -15,7 +15,7 @@ def login():
     if form.validate_on_submit(): # if form is valid
         # Search for user in database
         user = User.query.filter_by(email=form.email.data).first()
-        # If the user is None and the passward is verified
+        # If the user is None and the password is verified
         if user is not None and user.verify_password(form.password.data):
             login_user(user, form.remeber_me.data) # Login the user 
             # Return the user to the home page
@@ -40,7 +40,7 @@ def register():
     if form.validate_on_submit():
         user = User(email=form.email.data, 
                     username=form.username.data,
-                    passward=form.passward.data)
+                    password=form.password.data)
         db.session.add(user)
         db.session.commit()
         token = user.generate_confimation_token()
@@ -65,15 +65,15 @@ def confirm(token):
 @auth.route('/confirm')
 @login_required
 def resend_confirmation():
-    token = current_user.generate_confimation_token()
-    send_mail(user.email, 'Confirm Your Account', 'auth/email/confirm', user, token=token)
+    token = current_user.generate_confirmation_token()
+    send_mail(current_user.email, 'Confirm Your Account', 'auth/email/confirm', user=current_user, token=token)
     flash('A confirmation has been sent to your email')
-    return render_template(url_for('main.index'))
+    return redirect(url_for('main.index'))
 
 # before each request a user is verified if they have confirmed there email
 @auth.before_app_request
 def before_request():
-    if current_user.is_authenticateed() \
+    if current_user.is_authenticated \
             and not current_user.confirmed \
             and request.endpoint[:5] != 'auth.':
         return redirect(url_for('auth.unconfirmed'))
@@ -81,7 +81,7 @@ def before_request():
 # Route for unconfirmed user 
 @auth.route('/unconfirmed')
 def unconfirmed():
-    if current_user.is_anonymous() or current_user.confirmed:
+    if current_user.is_anonymous or current_user.confirmed:
         return redirect('main.index') 
     
     return render_template('auth/unconfirmed.html')
@@ -94,7 +94,7 @@ def change_password():
     if form.validate_on_submit():
         # old password verification
         if current_user.verify_password(form.old_password.data):
-            current_user.passward = form.passward.data
+            current_user.password = form.password.data
             db.session.add(current_user)
             flash('Your password has been updated')
             return redirect(url_for('main.index'))
@@ -107,7 +107,7 @@ def change_password():
 def change_email_request():
     form = ChangeEmailForm()
     if form.validate_on_submit():
-        if current_user.verify_password(form.passward.data):
+        if current_user.verify_password(form.password.data):
             new_email = form.email.data
             token = current_user.generate_confimation_token(new_email)
             send_mail(new_email, 'Confirm your email address', 
@@ -127,7 +127,7 @@ def password_reset_request():
     if not current_user.is_anonymous():
         return redirect(url_for('main.index'))
     
-    form = PasswordResetRequestForm():
+    form = PasswordResetRequestForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         # Send a security token to registered user 
@@ -142,7 +142,7 @@ def password_reset_request():
     return render_template('auth/reset_password.html', form=form)
 
 @auth.route('/reset/<token>', methods=['GET', 'POST'])
-def passward_reset(token):
+def password_reset(token):
     if not current_user.is_anonymous():
         return redirect(url_for('main.index'))
     form = PasswordResetForm()
