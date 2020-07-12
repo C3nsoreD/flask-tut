@@ -103,6 +103,7 @@ def change_password():
             flash('Invalid password')
     render_template('auth/change_password.html', form=form)
 
+
 @auth.route('/change-email', methods=['GET', 'POST'])
 @login_required
 def change_email_request():
