@@ -52,18 +52,18 @@ class User(UserMixin, db.Model):
         Returns a dictionary from comfimation 
         '''
         s = Serializer(current_app.config['SECRET_KEY'], expiration)
-        return s.dumps({'confirm':self.id})
+        return s.dumps({'confirm':self.id}).decode('utf-8')
 
     def generate_reset_token(self, expiration=3600):
         '''
         Returns a dictionary for resets
         '''
         s = Serializer(current_app.config['SECRET_KEY'], expiration)
-        return s.dumps({'reset':self.id})
+        return s.dumps({'reset':self.id}).decode('utf-8')
 
     def generate_email_change_token(self, new_email, expiration=3600):
         s = Serializer(current_app.config['SECRET_KEY'], expiration)
-        return s.dumps({'change_email': self.id, 'new_email':new_email})
+        return s.dumps({'change_email': self.id, 'new_email':new_email}).decode('utf-8')
  
     def confirm(self, token):
         '''
@@ -72,7 +72,7 @@ class User(UserMixin, db.Model):
         '''
         s = Serializer(current_app.config['SECRET_KEY'])
         try:
-            data = s.loads(token)
+            data = s.loads(token.encode('utf-8'))
         except:
             return False 
         if data.get('confirm') != self.id:
@@ -89,7 +89,7 @@ class User(UserMixin, db.Model):
         '''
         s = Serializer(current_app.config['SECRET_KEY'])
         try:
-            data = s.loads(token)
+            data = s.loads(token.encode('utf-8'))
         except:
             return False
         if data.get('change_email') != self.id:
@@ -115,7 +115,7 @@ class User(UserMixin, db.Model):
         '''
         s = Serializer(current_app.config['SECRET_KEY'])
         try:
-            data = s.loads(token)
+            data = s.loads(token.encode('utf-8'))
         except:
             return False
         
