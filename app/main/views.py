@@ -4,8 +4,9 @@ from flask import render_template, session, redirect, url_for
 from . import main
 from .forms import NameForm
 from .. import db
+from flask_login import login_required, current_user
 from ..models import User, Permission
-from .decorators import admin_required, permission_required
+from ..decorators import admin_required, permission_required
 
 
 @main.route('/', methods=['GET', 'POST'])

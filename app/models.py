@@ -83,7 +83,7 @@ class User(UserMixin, db.Model):
                 self.role = Role.query.filter_by(default=True).first()
 
     def __repr__(self):
-        return f'<User {self.username}>'
+        return f'<User {self.role_id}>'
 
     def can(self, perm):
         return self.role is not None and self.role.has_permission(perm)

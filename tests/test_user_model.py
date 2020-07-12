@@ -42,11 +42,11 @@ class UserModelTestCase(unittest.TestCase):
         self.assertFalse(u2.confirm(token))
        
     def test_user_role(self):
-        u = User(email='test@test.com', password='cat')
+        u = User(email='test1@test.com', password='cat')
         self.assertTrue(u.can(Permission.FOLLOW))
         self.assertTrue(u.can(Permission.COMMENT))
         self.assertTrue(u.can(Permission.WRITE))
-        self.assertTrue(u.can(Permission.MODERATE))
+        self.assertFalse(u.can(Permission.MODERATE))
         self.assertFalse(u.can(Permission.ADMIN))
 
     def test_anonymous_user(self):
