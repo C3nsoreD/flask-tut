@@ -40,6 +40,12 @@ def index():
         form=form, name=session.get('name'),
         known = session.get('known', False))
 
+@main.route('/user/<username>')
+def user(username):
+    user = User.query.filter_by(username=username).first()
+    return render_template('user.html', user=user)
+
+
 @main.route('/admin')
 @login_required
 @admin_required
