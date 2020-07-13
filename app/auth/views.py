@@ -7,7 +7,7 @@ from .forms import (
 )
 from ..models import User
 from ..email import send_mail
-
+from .. import db
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
@@ -43,7 +43,7 @@ def register():
                     password=form.password.data)
         db.session.add(user)
         db.session.commit()
-        token = user.generate_confimation_token()
+        token = user.generate_confirmation_token()
         send_mail(user.email, 'Confirm Your Account', 'auth/email/confirm', user=user, token=token)
         flash('A confirmation has been sent to your email')
         return redirect(url_for('auth.login'))
@@ -113,7 +113,7 @@ def change_email_request():
     if form.validate_on_submit():
         if current_user.verify_password(form.password.data):
             new_email = form.email.data
-            token = current_user.generate_confimation_token(new_email)
+            token = current_user.generate_confirmation_token(new_email)
             send_mail(new_email, 'Confirm your email address', 
                         'auth/email/change_email', user=current_user, token=token
             )
@@ -136,7 +136,7 @@ def password_reset_request():
         user = User.query.filter_by(email=form.email.data).first()
         # Send a security token to registered user 
         if user:
-            token = user.generate_confimation_token()
+            token = user.generate_confirmation_token()
             send_mail(user.email, 'Reset Your Password',
                     'auth/email/reset_password',
                     user=user, token=token,
