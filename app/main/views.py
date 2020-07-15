@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import render_template, session, redirect, url_for, flash
+from flask import render_template, session, redirect, url_for, flash, request, current_app
 
 from . import main
 from .forms import NameForm, EditProfileForm, EditProfileAdminForm, BlogPostForm
@@ -22,7 +22,7 @@ def index():
         # return redirect(url_for('.index')) # same as: redirect(url_for('main.index'))
     page = request.args.get('page', 1, type=int)
     pagination = Post.query.order_by(Post.timestamp.desc()).paginate(
-        Page, per_page=current_app.config['BLOG_POSTS_PER_PAGE'],
+        page, per_page=current_app.config['BLOG_POSTS_PER_PAGE'],
         error_out=False
     )
     posts = pagination.items
