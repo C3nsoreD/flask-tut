@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
 
 {% block title %}User{% endblock %}
 
@@ -8,6 +9,7 @@
 {% endblock %}
 
 {% block page_content %}
+<img class="img-rounded profile-thumbnail" src="{{ user.gravatar(size=256) }}">
 <div class='page_header'>
   <h1>{{ user.username }} </h1>
   {% if user.name or user.location %}
@@ -24,11 +26,14 @@
   <p><a href="mailto: {{ user.email }}">{{ user.email }}</a></p>
   {% endif %}
   {% if user.about_me %}<p>{{ user.about_me }}</p> {% endif %}
+  
   {% if user == current_user %}
-    <a class="btn btn-default" href="{{ url_for('.edit_profile') }}">
-    Edit Profile
-    </a>
-    {% endif %}
+    <a class="btn btn-default" href="{{ url_for('.edit_profile') }}">Edit Profile</a>
+  {% endif %}
+
+  {% if current_user.is_administrator() %}
+    <a class="btn btn-danger" href="{{ url_for('.edit_profile_admin', id=user.id) }}">Edit Profile [Admin]</a>
+  {% endif %}
   <hr>
   <p>
     Member since {{ moment(user.member_since).format('L') }}.

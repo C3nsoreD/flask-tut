@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import hashlib
+from flask import request
 from . import db, login_manager
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin, AnonymousUserMixin
@@ -15,6 +16,7 @@ class Permission:
     WRITE = 4
     MODERATE = 8
     ADMIN = 16
+
 
 class Role(db.Model):
     __tablename__ = 'roles'
@@ -47,8 +49,10 @@ class Role(db.Model):
             if role is None:
                 role = Role(name=r)
             role.reset_permissions()
+
             for perm in roles[r]:
                 role.add_permission(perm)
+
             role.default = (role.name == default_role)
             db.session.add(role)
         db.session.commit()
@@ -66,6 +70,7 @@ class Role(db.Model):
         
     def has_permission(self, perm):
         return self.permissions & perm == perm
+
     
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
@@ -78,16 +83,22 @@ class User(UserMixin, db.Model):
     member_since = db.Column(db.DateTime(), default=datetime.utcnow)
     last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
     password_hash = db.Column(db.String(128))
+    avatar_hash = db.Column(db.String(32))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     confirmed = db.Column(db.Boolean, default=False)
     
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
+        
         if self.role is None:
             if self.email == current_app.config['BLOG_TWO_ADMIN']:
                 self.role = Role.query.filter_by(name='Administrator').first()
             if self.role is None:
                 self.role = Role.query.filter_by(default=True).first()
+        
+        if self.email is not None nad self.avatar_hash is None:
+            self.avatar_hash = self.gravatar_hash()
+
 
     def __repr__(self):
         return f'<User {self.username}>'
@@ -178,6 +189,8 @@ class User(UserMixin, db.Model):
         if self.query.filter_by(email=new_email).first() is not None:
             return False
         self.email = new_email
+        # Gravatar hash changes each time a user changes there email
+        self.avatar_hash = self.gravatar_hash() 
         db.session.add(self)
         
         return True
@@ -199,6 +212,19 @@ class User(UserMixin, db.Model):
         self.password = new_password
         db.session.add(self)
         return True
+    
+    def gravatar(self, size=100, default='identicon', rating='g'):
+        if request.is_secure:
+            url = 'https://secure.gravatar.com/avatar'
+        else:
+            url = 'http://www.gravatar.com/avatar'
+            hash = self.avatar_hash or self.gravatar_hash()
+            
+        return '{url}/{hash}?s={size}&d={default}&r={rating}'.format(
+            url=url, hash=hash, size=size, default=default, rating=rating) 
+
+    def gravatar_hash(self):
+        return hashlib.md5(self.email.lower().encode('utf-8')).hexdigest()
 
 
 class AnonymousUser(AnonymousUserMixin):

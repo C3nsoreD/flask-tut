@@ -6,7 +6,7 @@ from flask.cli import AppGroup
 
 from flask_migrate import Migrate, MigrateCommand
 
-
+# Can change to default configuration which is development as defined in the config.py 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 migrate = Migrate(app, db)
 

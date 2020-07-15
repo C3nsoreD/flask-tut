@@ -7,3 +7,5 @@ pipfile
 *.db
 *.lock
 application/
+
+*.sqlite
