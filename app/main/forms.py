@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm as Form
 from wtforms import StringField, SubmitField, TextAreaField, BooleanField, SelectField
-from wtforms.validators import Required, Length, Regexp
+from wtforms.validators import Required, Length, Regexp, DataRequired, Email
 from wtforms import ValidationError
 from . import main
 from ..models import Role, User
@@ -49,4 +49,3 @@ class EditProfileAdminForm(Form):
 class BlogPostForm(Form):
     body = TextAreaField('Whats on your mind!', validators=[DataRequired()])
     submit = SubmitField('Submit')
-    

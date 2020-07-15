@@ -3,8 +3,8 @@
 }
 
 .profile-header {
-  min-height: 200px;
-  margin-left: 200px;
+  min-height: 260px;
+  margin-left: 280px;
 }
 
 div.post-tabs {
@@ -44,4 +44,13 @@ div.post-content {
 }
 div.post-footer {
     text-align: right;
+}
+.post-body h1 {
+    font-size: 140%;
+}
+.post-body h2 {
+    font-size: 130%;
+}
+.post-body h3 {
+    font-size: 120%;
 }
