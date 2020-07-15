@@ -12,11 +12,11 @@ class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess string'
     SQLACHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_TRACK_MODIFICATIONS = True
-    
+
     BLOG_TWO_MAIL_SUBJECT_PREFIX = '[BLOG 2.0]'
     BLOG_TWO_MAIL_SENDER = 'Blog 2 Admin <blogtwo@example.com'
     BLOG_TWO_ADMIN = os.environ.get("BLOG_TWO_ADMIN") or 'test@test.com'
-
+    BLOG_POSTS_PER_PAGE = 10
     @staticmethod
     def init_app(app):
         # Specific initializations can be performed.

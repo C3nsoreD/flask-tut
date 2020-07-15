@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
 
 {% block title %}BLOG2.0{% endblock %}
 
@@ -19,7 +20,10 @@
       {% endif %}
   </div>
 {% include '_posts.html' %}
+<div class="pagination">
+  {{ macros.pagination_widget(pagination, '.index') }}
 </div>
+
 <p>The current local date and time is <b>{{ moment(current_time).format('LLL') }}</b>.</p>
 <p><small>That was {{ moment(current_time).fromNow(refresh=True) }}</small></p>
 

@@ -1,5 +1,5 @@
 .profile-thumbnail {
-  position: absolute;
+  position: inherit;
 }
 
 .profile-header {
