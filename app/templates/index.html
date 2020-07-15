@@ -5,8 +5,8 @@
 
 {% block page_content %}
 <div class='page-header'>
-  
-  <h2>Hello 
+
+  <h2>Hello
     {% if current_user.is_authenticated %}
       {{ current_user.username|capitalize }}
     {% else %}
@@ -15,13 +15,30 @@
   </h2>
 
   <div>
-    {% if not known %}
-      <p>Pleased to meet you</p>
-    {% else %}
-      <p>Happy to see you again!</p>
-    {% endif %}
+    {% if current_user.can(Permission.WRITE) %}
+      {{ wtf.quick_form(form) }}
+      {% endif %}
   </div>
-
+  <ul class="posts">
+    {% for post in posts %}
+    <li class="post">
+      <div class="profile-thumbnail">
+        <a href="{{ url_for('.user', username=post.author.username) }}">
+          <img class="img-rounded profile-thumbnail" src="{{ post.author.gravatar(size=40) }}">
+        </a>
+      </div>
+      <div class="post-data">{{ moment(post.timestamp).fromNow() }}</div>
+      <div class="post-author">
+        <a href="{{ url_for('.user', username=post.author.username) }}">
+          {{ post.author.username }}
+        </a>
+      </div>
+      <<div class="post-body">
+        {{ post.body }}
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
 </div>
 <p>The current local date and time is <b>{{ moment(current_time).format('LLL') }}</b>.</p>
 <p><small>That was {{ moment(current_time).fromNow(refresh=True) }}</small></p>
