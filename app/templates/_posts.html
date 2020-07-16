@@ -3,7 +3,7 @@
   <li class="post">
     <div class="profile-thumbnail">
       <a href="{{ url_for('.user', username=post.author.username) }}">
-        <img class="img-rounded profile-thumbnail" src="{{ post.author.gravatar(size=20) }}">
+        <img class="img-rounded profile-thumbnail" src="{{ post.author.gravatar(size=40) }}">
       </a>
     </div>
     <div class="post-content">
@@ -22,6 +22,15 @@
         <a href="{{ url_for('.post', id=post.id) }}">
           <span class="label label default">Permalink</span>
         </a>
+        {% if current_user == post.author %}
+        <a href="{{ url_for('.edit', id=post.id) }}">
+          <span class="label label-primary">Edit</span>
+        </a>
+        {% elif current_user.is_administrator() %}
+        <a href="{{ url_for('.edit', id=post.id) }}">
+          <span class="label label-primary">Edit [Admin]</span>
+        </a>
+        {% endif %}
       </div>
     </div>
   </li>
