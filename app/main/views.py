@@ -30,14 +30,18 @@ def index():
         current_time=datetime.utcnow(),
         form=form, posts=posts, pagination=pagination)
 
-
+# User profile link
 @main.route('/user/<username>')
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
     posts = user.posts.order_by(Post.timestamp.desc()).all()
     return render_template('user.html', user=user, posts=posts)
 
-
+# enable permanent links to posts
+@main.route('/post/<int:id>')
+def post(id):
+    post = Post.query.get_or_404(id)
+    return render_template('post.html', posts=[post])
 
 @main.route('/admin')
 @login_required
