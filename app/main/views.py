@@ -43,6 +43,7 @@ def post(id):
     post = Post.query.get_or_404(id)
     return render_template('post.html', posts=[post])
 
+# Edit post route
 @main.route('/edit/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit(id):
@@ -56,7 +57,7 @@ def edit(id):
         db.session.commit()
         flash("The post has been updated")
         return(redirect(url_for('.post', id=post.id)))
-        
+
     form.body.data = post.body
     return render_template('edit_post.html', form=form)
 
@@ -91,6 +92,7 @@ def edit_profile():
     form.location.data = current_user.location
     form.about_me.data = current_user.about_me
     return render_template('edit_profile.html', form=form)
+
 
 @main.route('/edit_profile/<int:id>', methods=['GET','POST'])
 @login_required
