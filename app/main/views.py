@@ -100,8 +100,11 @@ def followers(username):
         flash('Invalid user')
         return redirect(url_for('.index'))
     page = request.args.get('page', 1, type=int)
-    pagination = user.followers
-
+    pagination = user.followers.paginate(
+        page, per_page=current_app.config['BLOG_POSTS_PER_PAGE'], error_out=False
+    )
+    follows = [{'user':item.follower, 'timestamp':item.timestamp} for item in pagination.items]
+    return render_template('followers.html', user=user, title='Followers of', endpoint='.followers', pagination=pagination, follows=follows)
 
 @main.route('/admin')
 @login_required
