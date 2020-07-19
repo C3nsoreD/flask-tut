@@ -18,6 +18,11 @@ class Permission:
     MODERATE = 8
     ADMIN = 16
 
+class Follow(db.Model):
+    __tablename__ = 'follows'
+    follower_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    followed_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
 class Role(db.Model):
     __tablename__ = 'roles'
@@ -234,7 +239,7 @@ class User(UserMixin, db.Model):
 
     def follow(self):
         '''
-        Inserts into the database a follow instance that relates the us
+        Inserts Follow ins
         '''
         if not self.is_following(user):
             f = Follow(follower=self, followed=user)
@@ -245,6 +250,7 @@ class User(UserMixin, db.Model):
         if f:
             db.session.delete(f)
 
+    
     def is_following(self, user):
         if user.id is None:
             return False
@@ -280,12 +286,6 @@ class Post(db.Model):
             bleach.clean(markdown(value, output_format='html'),
             tags=allowed_tags, strip=True))
 
-
-class Follow(db.Model):
-    __tablename__ = 'follows'
-    follower_id = db.Column(db.Integer, db.ForeignKey('users.id'). primary_key=True)
-    followed_id = db.Column(db.Integer, db.ForeignKey('users.id'). primary_key=True)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
 
 
