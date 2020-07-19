@@ -61,6 +61,47 @@ def edit(id):
     form.body.data = post.body
     return render_template('edit_post.html', form=form)
 
+@main.route('/follow/<username>')
+@login_required
+@permission_required(Permission.FOLLOW)
+def follow(username):
+    user = User.query.filter_by(username=username).first()
+    if user is None:
+        flash('Invalid user')
+        return redirect(url_for('.index'))
+    if current_user.is_following(user):
+        flash('You are already following the user')
+        return redirect(url_for('.index', username=username))
+    current_user.follow(user)
+    db.session.commit()
+    flash('You are now following %s', % username)
+    return redirect(url_for('.index', username=username))
+
+@main.route('/unfollow/<username>')
+@login_required
+@permission_required(Permission.FOLLOW)
+def unfollow(username):
+    user = User.query.filter_by(username=username).first()
+    if user is None:
+        flash('Invalid user')
+        return redirect(url_for('.index'))
+    if current_user.is_following(user):
+        flash('You are no longer following the user')
+        return redirect(url_for('.index', username=username))
+    current_user.unfollow(user)
+    db.session.commit()
+    flash('You are now following %s', % username)
+    return redirect(url_for('.index', username=username))
+
+@main.route('/followers/<username>')
+def followers(username):
+    user = User.query.filter_by(username=username).first()
+    if user is None:
+        flash('Invalid user')
+        return redirect(url_for('.index'))
+    page = request.args.get('page', 1, type=int)
+    pagination = user.followers
+
 
 @main.route('/admin')
 @login_required
