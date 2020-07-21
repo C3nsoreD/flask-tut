@@ -74,7 +74,7 @@ def follow(username):
         return redirect(url_for('.index', username=username))
     current_user.follow(user)
     db.session.commit()
-    flash('You are now following %s', % username)
+    flash('You are now following %s' % username)
     return redirect(url_for('.index', username=username))
 
 @main.route('/unfollow/<username>')
@@ -88,9 +88,10 @@ def unfollow(username):
     if current_user.is_following(user):
         flash('You are no longer following the user')
         return redirect(url_for('.index', username=username))
+        
     current_user.unfollow(user)
     db.session.commit()
-    flash('You are now following %s', % username)
+    flash('You are now following %s' % username)
     return redirect(url_for('.index', username=username))
 
 @main.route('/followers/<username>')
@@ -105,6 +106,21 @@ def followers(username):
     )
     follows = [{'user':item.follower, 'timestamp':item.timestamp} for item in pagination.items]
     return render_template('followers.html', user=user, title='Followers of', endpoint='.followers', pagination=pagination, follows=follows)
+
+@main.route('/followed_by/<username>')
+def followed_by(username):
+    user = User.query.filter_by(username=username).first()
+    if user is None:
+        flash('Invalid user')
+        return redirect(url_for('.index'))
+    page = request.args.get('page', 1, type=int)
+    pagination = user.followed.paginate(
+        per, per_page=current_app.config['BLOG_POSTS_PER_PAGE'], error_out=False
+    )
+    follews = [{'user':item.followed, 'timestamp':item.timestamp} for item in pagination.items]
+    return render_template('followers.html', user=user, title='Followers of', endpoint='.followers', pagination=pagination, follows=follows)
+
+
 
 @main.route('/admin')
 @login_required
