@@ -88,7 +88,7 @@ def unfollow(username):
     if current_user.is_following(user):
         flash('You are no longer following the user')
         return redirect(url_for('.index', username=username))
-        
+
     current_user.unfollow(user)
     db.session.commit()
     flash('You are now following %s' % username)
@@ -117,7 +117,7 @@ def followed_by(username):
     pagination = user.followed.paginate(
         per, per_page=current_app.config['BLOG_POSTS_PER_PAGE'], error_out=False
     )
-    follews = [{'user':item.followed, 'timestamp':item.timestamp} for item in pagination.items]
+    follows = [{'user':item.followed, 'timestamp':item.timestamp} for item in pagination.items]
     return render_template('followers.html', user=user, title='Followers of', endpoint='.followers', pagination=pagination, follows=follows)
 
 
